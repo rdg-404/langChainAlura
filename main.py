@@ -1,4 +1,5 @@
 from langchain_openai import ChatOpenAI
+from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
 import os
 
@@ -9,7 +10,20 @@ atividade = "calistenia"
 numeros_dias = 5
 horas_dias = 1
 
-prompt = f"Crie um plano de treino de {atividade} para {numeros_dias} dias, com duração de {horas_dias} horas por dia."
+modelo_de_prompt = PromptTemplate(
+    template=""""
+        Crie um plano de treino de {atividade} para {dias} dias, com duração de {horas_dias} horas por dia.
+    """
+)
+
+prompt = modelo_de_prompt.format(
+    atividade=atividade,
+    dias=numeros_dias,
+    horas_dias=horas_dias
+)
+
+print(f"Prompt : \n", prompt)
+
 
 modelo = ChatOpenAI(
     model="gpt-3.5-turbo",
