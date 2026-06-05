@@ -1,31 +1,21 @@
-from openai import OpenAI
+from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
-atividade = "musculação"
+atividade = "calistenia"
 numeros_dias = 5
 horas_dias = 1
-prompt = f"Crie um plano de treino para um iniciante em {atividade} para {numeros_dias} dias, considerando que ele tem {horas_dias} horas para treinar por dia"
 
-cliente = OpenAI(api_key=api_key)
+prompt = f"Crie um plano de treino de {atividade} para {numeros_dias} dias, com duração de {horas_dias} horas por dia."
 
-
-resposta = cliente.chat.completions.create(
+modelo = ChatOpenAI(
     model="gpt-3.5-turbo",
-    messages=[
-        {
-            "role": "system",
-            "content": "Você é um personal trainer para iniciantes."
-        },
-        {
-            "role": "user",
-            "content": prompt
-        }
-    ])
+    temperature=0.5,
+    api_key=api_key
+)
 
-
-
-print(resposta.choices[0].message.content)
+resposta = modelo.invoke(prompt)
+print(resposta.content)
