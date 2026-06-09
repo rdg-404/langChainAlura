@@ -1,3 +1,4 @@
+from langchain.schema import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
@@ -6,23 +7,14 @@ import os
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
-atividade = "calistenia"
-numeros_dias = 5
-horas_dias = 1
 
-modelo_de_prompt = PromptTemplate(
+
+prompt_receita = PromptTemplate(
     template=""""
-        Crie um plano de treino de {atividade} para {dias} dias, com duração de {horas_dias} horas por dia.
-    """
+      Sugira receitas para perder peso. Dado meu interesse por {interesse}
+    """,
+    input_variables=["interesse"]
 )
-
-prompt = modelo_de_prompt.format(
-    atividade=atividade,
-    dias=numeros_dias,
-    horas_dias=horas_dias
-)
-
-print(f"Prompt : \n", prompt)
 
 
 modelo = ChatOpenAI(
@@ -31,5 +23,9 @@ modelo = ChatOpenAI(
     api_key=api_key
 )
 
-resposta = modelo.invoke(prompt)
-print(resposta.content)
+cadeia = prompt_receita | modelo | StrOutputParser()
+
+resposta = cadeia.invoke(
+    {"interesse": "frutas"}
+)
+print(resposta)
