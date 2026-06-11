@@ -3,7 +3,10 @@ from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from pydantic import Field, BaseModel
 from dotenv import load_dotenv
+from langchain.globals import set_debug
 import os
+
+set_debug(True)
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
